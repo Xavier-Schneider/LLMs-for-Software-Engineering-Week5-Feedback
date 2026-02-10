@@ -54,3 +54,23 @@ ChatGPT 5.2 generated the JavaScript code for this problem.
 You can find all related files here: https://github.com/Xavier-Schneider/LLMs-for-Software-Engineering-Week5-Feedback
 
 ---
+
+### Problem B_2: Add JSDoc comments to all functions
+
+**Task Description:**  
+Your next task is to add in JSDoc comments to all functions that are currently missing them.
+
+**Starter Code:**  
+You can reuse the files from B_1 for this task.
+
+---
+
+### Problem B_3: Summarize the code
+
+**Task Description:**  
+The final task is to summarize each function in the code file, Also provide an overview of what the code does along with any important technical information about the code that a developer should know before reading the code.
+
+**Starter Code:**  
+You can reuse the files from B_1 for this task.
+
+---
