@@ -476,7 +476,7 @@ Description:
 When generating structured documentation (docstrings, Doxygen blocks), provide an explicit template showing the expected format. Include 2-3 examples from your codebase that demonstrate your project’s style conventions. Structure can include what to focus on in each section, detailing what aspects of the code are most important.
 
 Reasoning:  
-LLMs produce more consistent output when given explicit structure [4]. Few-shot examples matching your documentation style train the model on your terminology, formatting preferences, and level of detail. The ToMMY paper noted that formatting significantly affects perceived usefulness. The Ericsson paper found that expressing conciseness is much more valuable than telling the model to ignore error handling 
+LLMs produce more consistent output when given explicit structure. Few-shot examples matching your documentation style train the model on your terminology, formatting preferences, and level of detail. The ToMMY paper noted that formatting significantly affects perceived usefulness. The Ericsson paper found that expressing conciseness is much more valuable than telling the model to ignore error handling 
 
 **Prompt and Context:**  
 Prompt:  
