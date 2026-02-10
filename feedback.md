@@ -21,10 +21,10 @@ To run this problem, make sure to clone the FFmpeg repository: https://github.co
 #### Guideline 6: Develop a global plan for the entire repository.
 
 **Guideline Definition**
-Description:
+Description:  
 Repository-level code understanding is not about “writing comments,” but about reasoning through the repository’s causal structure.
 
-Reasoning:
+Reasoning:  
 The planning process should begin from a seed file—a clearly identified entry point—and expand to a plan for the entire project. This includes explicitly mapping, at the planning stage, which functions in the seed file call which functions in which files.
 
 The plan should clearly answer questions such as: Which components call this function? Which classes inherit from this class? Where is this field used?
@@ -172,10 +172,10 @@ As we can see, because the repository is so large, the LLM simply relegates to s
 
 #### Guideline 6: Develop a local plan. Create a plan for a file and its immediate dependencies
 **Guideline Definition**
-Description:
+Description:  
 Focusing on a single file and its immediate dependencies helps the LLM dig deeper into what the file accomplishes and what purpose it serves. The LLM is also able to provide much more fine-grained areas of improvement. Something its not able to do when trying to inspect the entire repository at once.
 
-Reasoning:
+Reasoning:  
 When the LLM is more targeted, its able to focus its attention on lower level details, details that actually matter when trying to suggest ways to improve the software. It simply can't do this when trying to look at too much code at once.
 
 **Prompt and Context:**  
@@ -471,6 +471,13 @@ You can reuse the files from B_1 for this task.
 
 #### Guideline 3: Provide a Documentation Template for the Summary 
 
+**Guideline Definition**
+Description:  
+When generating structured documentation (docstrings, Doxygen blocks), provide an explicit template showing the expected format. Include 2-3 examples from your codebase that demonstrate your project’s style conventions. Structure can include what to focus on in each section, detailing what aspects of the code are most important.
+
+Reasoning:  
+LLMs produce more consistent output when given explicit structure [4]. Few-shot examples matching your documentation style train the model on your terminology, formatting preferences, and level of detail. The ToMMY paper noted that formatting significantly affects perceived usefulness. The Ericsson paper found that expressing conciseness is much more valuable than telling the model to ignore error handling 
+
 **Prompt and Context:**  
 Prompt:  
 For each function that has a function comment associated with it, convert the comment into a JSDoc style comment. If a function doesn't have a comment associated with it, don't add a comment to it. Here is an example of a JSDoc style comment for a basic function:  
@@ -687,10 +694,10 @@ The guideline doesn't work because it doesn't provide any meaningful benefit to 
 #### Guideline 3: Provide a Documentation Tool Name for the Summary 
 
 **Guideline Definition**
-Description:
+Description:  
 When generating comments, ask the LLM explicitly the name of the tool you want it to use (e.g. JSDoc and Doxygen).
 
-Reasoning:
+Reasoning:  
 When pretraining, the LLM sees plenty of examples from the web of how different commenting tools like their comments formatted, assuming the tool is quite popular and has been around awhile. If so, you can simply just mention the name of the tool, and the LLM will generate the correectly formatted comments for you.
 
 **Prompt and Context:**  
@@ -897,10 +904,10 @@ See ProblemC/cache.h.
 #### Guideline 2: Explicitly Constrain Summary Length
 
 **Guideline Definition**
-Description:
+Description:  
 Request summaries under a specific word count (e.g., “Summarize in one sentence, maximum 15 words”) or match a target format like “@brief [one-line description]”. This assists in preventing unnecessary summaries such as error handling, which explicitly instructing to ignore this can hurt results.
 
-Reasoning:
+Reasoning:  
 LLMs tend to generate verbose summaries that score poorly on BLEU metrics despite being semantically accurate. The Ericsson study found that a simple “WordRestrict” prompt asking for <20 words performed as well as complex retrieval-augmented approaches while being far simpler to implement. 
 
 **Prompt**  
@@ -943,12 +950,12 @@ bool cache_get(Cache* c, const Key& k, Value* out);
 #### Improved Guideline 2: Use a Two-Level Summary with a “Contract First” Budget
 
 **Guideline Definition**
-Description:
+Description:  
 Instead of forcing everything into one very short sentence, ask the model to write two parts.
 First, write a short one-line @brief (about 15–20 words) that says what the function is for.
 Second, only if needed, add a small Contract section with a few bullet points (2–5) that explain things callers must be careful about.
 
-Reasoning:
+Reasoning:  
 Very short summaries often hide important details. A function may look simple but still block, take locks, or do I/O, and callers need to know this. A strict word limit makes the model drop this information, even if good examples are given. Splitting the summary into “what it does” and “what callers must know” keeps documentation short and readable while still being safe and useful for real coding work.
 
 **Prompt**  
