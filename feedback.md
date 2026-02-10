@@ -491,3 +491,118 @@ console.log("Best move for", nextPlayer(board), "=>", bestMove(board));
 As we can see, there is no discernible difference from giving examples of how comments should look, when the format is already well known, from simply telling the LLM the name of the format you want comments in. As explained above, the LLM has already seen plenty of examples how the comments should look during pretraining, so you can simply just tell it the name of the tool, and the LLM will understand what you mean.
 
 ---
+
+### Problem C: Docstring Generation
+
+**Task Description:**  
+Generate documentation for cache_get that is helpful for API consumers (callers), especially around side effects and safety.
+
+**Starter Code:**  
+See ProblemC/cache.h.
+
+### 2. Guidelines that didn't work for Problem C
+
+#### Guideline 2: Explicitly Constrain Summary Length
+
+**Guideline Definition**
+Description:
+Request summaries under a specific word count (e.g., “Summarize in one sentence, maximum 15 words”) or match a target format like “@brief [one-line description]”. This assists in preventing unnecessary summaries such as error handling, which explicitly instructing to ignore this can hurt results.
+
+Reasoning:
+LLMs tend to generate verbose summaries that score poorly on BLEU metrics despite being semantically accurate. The Ericsson study found that a simple “WordRestrict” prompt asking for <20 words performed as well as complex retrieval-augmented approaches while being far simpler to implement. 
+
+**Prompt**  
+
+```shell
+You are documenting our C++ API.
+
+Instruction:
+- Generate a @brief description in one sentence, maximum 15 words.
+- Focus on what the function does.
+
+Now write the @brief for:
+bool cache_get(Cache* c, const Key& k, Value* out);
+```
+
+**Co-pilot Output**
+
+```
+I've added the @brief description to the cache_get function in the file. The description is: "Retrieves a value from the cache using the specified key." (7 words)
+```
+
+```c
+// cache.h
+/*
+Task:
+Generate documentation for cache_get that is helpful for API consumers (callers), especially around side effects and safety.
+*/
+struct Cache;
+struct Key;
+struct Value;
+
+/**
+ * @brief Retrieves a value from the cache using the specified key.
+ * If entry is missing or stale, may enqueue an async refresh.
+ * Refresh can perform network I/O and may take locks internally.
+ */
+bool cache_get(Cache* c, const Key& k, Value* out);
+```
+
+#### Improved Guideline 2: Use a Two-Level Summary with a “Contract First” Budget
+
+**Guideline Definition**
+Description:
+Instead of forcing everything into one very short sentence, ask the model to write two parts.
+First, write a short one-line @brief (about 15–20 words) that says what the function is for.
+Second, only if needed, add a small Contract section with a few bullet points (2–5) that explain things callers must be careful about.
+
+Reasoning:
+Very short summaries often hide important details. A function may look simple but still block, take locks, or do I/O, and callers need to know this. A strict word limit makes the model drop this information, even if good examples are given. Splitting the summary into “what it does” and “what callers must know” keeps documentation short and readable while still being safe and useful for real coding work.
+
+**Prompt**  
+```shell
+You are documenting our C++ API.
+
+Instruction:
+1) Write a @brief in ONE sentence (max 20 words) describing purpose only.
+2) If the function blocks, takes locks, does I/O, enqueues background work, allocates, or has non-trivial thread-safety:
+   Add a "Contract:" section with 2–5 bullets explicitly stating those facts in caller-facing terms.
+3) Do NOT describe implementation details (loops, data structures). Document purpose + caller-visible guarantees/risks.
+
+Context:
+- If entry is missing or stale, cache_get may enqueue an async refresh.
+- Refresh can perform network I/O and may take locks internally.
+
+Now document:
+bool cache_get(Cache* c, const Key& k, Value* out);
+
+```
+
+**Co-pilot Output**
+```
+I've updated the documentation for cache_get in the file. The @brief describes the purpose concisely, and the Contract section outlines the caller-visible behaviors regarding I/O, background work, and locking.
+```
+
+```c
+// cache.h
+/*
+Task:
+Generate documentation for cache_get that is helpful for API consumers (callers), especially around side effects and safety.
+*/
+struct Cache;
+struct Key;
+struct Value;
+
+/**
+ * @brief Retrieves the cached value associated with the specified key.
+ * Contract:
+ * - May perform network I/O if the entry is missing or stale and requires refresh.
+ * - May enqueue background work for asynchronous refresh operations.
+ * - May take locks internally to ensure thread safety during access.
+ */
+bool cache_get(Cache* c, const Key& k, Value* out);
+```
+
+**Analysis**
+
+Guideline 2 fails for Problem C because a strict word limit forces the summary to describe only the main action and omit important safety details. The one-line @brief correctly says that the function retrieves a cached value, but it hides critical behaviors such as network I/O, background refresh, etc., which are essential for callers to know. The improved Guideline 2 solves this by splitting documentation into a short purpose line and a small Contract section, allowing side effects and safety concerns to be stated clearly without making the summary verbose. This keeps the documentation concise while making it accurate and useful for real API usage.
