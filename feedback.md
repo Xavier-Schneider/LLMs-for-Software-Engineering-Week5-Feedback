@@ -2,6 +2,8 @@
 
 **Authors:** Xavier Schneider, Greg French, Max Ku  
 
+**Model Used:** Raptor Mini (Week 5 model)
+
 ## 1. Counterexample Problems
 
 ### Problem A: Fun with FFmpeg
@@ -31,7 +33,7 @@ The plan should clearly answer questions such as: Which components call this fun
 
 **Prompt and Context:**  
 Prompt:  
-Provide a comprehensive code summary for this entire repo. Make sure to provide a detailed evaluation of the code and include specific details about areas that are inefficient and could be improved. For each area of improvement, provide a detailed step-by-step summary on how to improve it.
+Provide a comprehensive code summary for this entire repo starting from README.md. Make sure to provide a detailed evaluation of the code and include specific details about areas that are inefficient and could be improved. For each area of improvement, provide a detailed step-by-step summary on how to improve it.
 
 Context:  
 The entire FFmpeg repo: https://github.com/FFmpeg/FFmpeg
