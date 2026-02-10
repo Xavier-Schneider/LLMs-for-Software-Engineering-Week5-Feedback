@@ -488,6 +488,6 @@ console.log("Best move for", nextPlayer(board), "=>", bestMove(board));
 
 **Analysis:**
 
-ANALYSIS GOES HERE
+As we can see, there is no discernible difference from giving examples of how comments should look, when the format is already well known, from simply telling the LLM the name of the format you want comments in. As explained above, the LLM has already seen plenty of examples how the comments should look during pretraining, so you can simply just tell it the name of the tool, and the LLM will understand what you mean.
 
 ---
